@@ -243,6 +243,14 @@ public class Sprite {
 		return (animate % time > diff) ? x1 : x2;
 	}
 
+	public static Image movingSprite(Image x1, Image x2, Image x3, int t, int l) {
+		if (t < l) return x1;
+		if (t < l * 2) return x2;
+		if (t < l * 3) return x3;
+
+		return null;
+	}
+
 	
 	public int getSize() {
 		return SIZE;
