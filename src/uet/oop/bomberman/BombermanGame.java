@@ -26,6 +26,7 @@ public class BombermanGame extends Application {
     
     public static final int WIDTH = 20;
     public static final int HEIGHT = 15;
+    public static final int LEVEL = 1;
     public static boolean sp = true;
 
     
@@ -105,8 +106,10 @@ public class BombermanGame extends Application {
         entities.add(testBalloom);
     }
 
-    // tạo bản đò
+    // tạo bản đồ
+
     public void createMap() {
+
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 Entity object;
@@ -120,6 +123,9 @@ public class BombermanGame extends Application {
             }
         }
 
+        
+
+
         // them de test
         changeObjects.add(new Brick(8,8,Sprite.brick.getFxImage()));
         changeObjects.add(new Brick(4,8,Sprite.brick.getFxImage()));
@@ -131,6 +137,44 @@ public class BombermanGame extends Application {
         changeObjects.add(new Brick(10,8,Sprite.brick.getFxImage()));
         changeObjects.add(new Brick(6,10,Sprite.brick.getFxImage()));
 
+    }
+
+    public void addObject(char c, int x, int y) {
+        switch (c) {
+            case '#': changeObjects.add(new Wall(x,y,Sprite.brick.getFxImage()));
+            case '*': changeObjects.add(new Brick(x,y,Sprite.brick.getFxImage()));
+            case 'x': changeObjects.add(new Portal(x,y,Sprite.brick.getFxImage()));
+        }
+    }
+
+    public static void ReadMapToFile(int l) {
+        String ip = "res\\levels\\Level" + LEVEL + ".txt";
+        Scanner sc = null;
+        try{
+            sc = new Scanner(Paths.get(ip));
+            int level = sc.nextInt();
+            int h = sc.nextInt();
+            int w = sc.nextInt();
+            sc.nextLine();
+
+            char[][] obj = new char[h][w]
+
+            for (int i = 0; i < h; i++) {
+                String s = scanner.nextLine();
+                for (int j = 0; j < w; w++) {
+                    if (s.length() > 0)
+                        obj[i][j] = s.charAt(w);
+                }
+            }
+
+            LEVEL = level;
+            HEIGHT = h;
+            WIDTH = w;
+        } catch (IOException e) {
+            System.out.println("lỗi đọc file map");
+            System.out.println(e.fillInStackTrace());
+        }
+        sc.close();
     }
     public void update() {
         for (int i = 0; i < changeObjects.size(); i++) {
