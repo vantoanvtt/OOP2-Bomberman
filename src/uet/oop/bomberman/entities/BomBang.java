@@ -10,8 +10,8 @@ import java.awt.*;
 public class BomBang extends Entity {
     protected int time;
     protected Image left, right, up, down, center, leftl, rightl, downl, upl;
-    protected Rectangle rectanglel, rectangler, rectanglec, rectangleu, rectangled,
-                        rectanglell, rectanglerl, rectanglecl, rectangleul, rectangledl;
+    protected Rectangle rectanglel, rectangler, rectangleu, rectangled,
+                        rectanglell, rectanglerl, rectangleul, rectangledl;
     public BomBang(int x, int y, Image img) {
         super(x,y,img);
     }
@@ -39,22 +39,22 @@ public class BomBang extends Entity {
         rectangle = new Rectangle(x, y, (int) center.getWidth(), (int) center.getHeight());
 
 
-        if (handleCollision(rectanglel) == null) {
+        if (handleCollision(rectanglel) == 1) {
             rectanglel = null;
             left = null;
         }
 
-        if (handleCollision(rectangler) == null) {
+        if (handleCollision(rectangler) == 1) {
             rectangler = null;
             right = null;
         }
 
-        if (handleCollision(rectangleu) == null) {
+        if (handleCollision(rectangleu) == 1) {
             rectangleu = null;
             up = null;
         }
 
-        if (handleCollision(rectangled) == null) {
+        if (handleCollision(rectangled) == 1) {
             rectangled = null;
             down = null;
         }
@@ -100,50 +100,54 @@ public class BomBang extends Entity {
                 (int) upl.getHeight());
 
 
-        if (handleCollision(rectanglel) == null) {
+        if (handleCollision(rectanglel) == 1) {
             rectanglel = null;
             rectanglell = null;
             leftl = null;
             left = null;
         }
 
-        if (handleCollision(rectangler) == null) {
+        if (handleCollision(rectangler) == 1) {
             rectangler = null;
             rectanglerl = null;
             rightl = null;
             right = null;
         }
 
-        if (handleCollision(rectangleu) == null) {
+        if (handleCollision(rectangleu) == 1) {
             rectangleu = null;
             rectangleul = null;
             upl = null;
             up = null;
         }
 
-        if (handleCollision(rectangled) == null) {
+        if (handleCollision(rectangled) == 1) {
             rectangled = null;
             rectangledl = null;
             downl = null;
             down = null;
         }
 
-        if (rectanglell != null && handleCollision(rectanglell) == null) {
+        if ((rectanglell != null && handleCollision(rectanglell) == 1) || (rectanglel != null
+                && handleCollision(rectanglel) == 2)) {
             rectanglell = null;
             leftl = null;
         }
 
-        if (rectanglerl != null && handleCollision(rectanglerl) == null) {
+        if ((rectanglerl != null && handleCollision(rectanglerl) == 1) || (rectangler != null
+                && handleCollision(rectangler) == 2)) {
             rectanglerl = null;
             rightl = null;
         }
 
-        if (rectangleul != null && handleCollision(rectangleul) == null) {
+        if ((rectangleul != null && handleCollision(rectangleul) == 1) || (rectangleu != null
+                && handleCollision(rectangleu) == 2)) {
             rectangleul = null;
             upl = null;
         }
 
-        if (rectangledl != null && handleCollision(rectangledl) == null) {
+        if ((rectangledl != null && handleCollision(rectangledl) == 1) || (rectangled != null
+                && handleCollision(rectangled) == 2)) {
             rectangledl = null;
             downl = null;
         }
@@ -171,13 +175,19 @@ public class BomBang extends Entity {
     }
 
     //xử lí khi va chạm với vật thể
-    public Rectangle handleCollision(Rectangle t) {
+    public int handleCollision(Rectangle t) {
         if (BombermanGame.getEntity(t) != null) {
             if (BombermanGame.getEntity(t) instanceof Wall) {
-                return null;
+                return 1;
             }
         }
-        return t;
+
+        if (BombermanGame.checkCollisionItem(t) != null) {
+            if (BombermanGame.checkCollisionItem(t) instanceof Brick) {
+                return 2;
+            }
+        }
+        return 0;
     }
 
     //xử lí va chạm trước khi vẽ bom và tạo vùng

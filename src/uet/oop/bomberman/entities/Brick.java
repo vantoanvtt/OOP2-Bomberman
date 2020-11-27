@@ -20,7 +20,7 @@ public class Brick extends Entity {
 
     }
 
-    private static int animate = 49;
+    private int animate = 49;
 
 
     @Override
@@ -54,7 +54,7 @@ public class Brick extends Entity {
     }
 
     public void afterDestroy() {
-        int r = generator.nextInt(22);
+        int r = generator.nextInt(28);
         if (r == 4) {
             BombermanGame.changeObjects.add(new FlameItem(x, y, Sprite.powerup_flames.getFxImage()));
         }

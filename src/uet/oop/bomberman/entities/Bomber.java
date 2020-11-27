@@ -8,9 +8,11 @@ import javafx.scene.paint.Color;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.Item.BombItem;
 import uet.oop.bomberman.entities.Item.FlameItem;
+import uet.oop.bomberman.entities.Item.Portal;
 import uet.oop.bomberman.entities.Item.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.input.Keyboard;
+import uet.oop.bomberman.sound.GameSound;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class Bomber extends Mob {
     public static List<Bomb> listBom = new ArrayList<>();
     public static List<BomBang> listBomBang = new ArrayList<>();
 
-    protected static double speed = 1.0;
+    protected static double speed = 2.0;
     protected static int max_bomb = 1;
     protected static boolean flame = false;
 
@@ -33,7 +35,7 @@ public class Bomber extends Mob {
         this.y = y * Sprite.SCALED_SIZE;
         this.img = img;
         this._input = _input;
-        this.rectangle = new Rectangle(this.x, this.y , (int) (img.getWidth()), (int) img.getHeight());
+        this.rectangle = new Rectangle(this.x, this.y , 30, 32);
     }
 
 
@@ -48,6 +50,7 @@ public class Bomber extends Mob {
         animate();
 
         calculateMove();
+
 
         chooseSprite();
 
@@ -100,13 +103,16 @@ public class Bomber extends Mob {
     @Override
     protected void calculateMove() {
         double xa = 0, ya = 0;
-        if(_input.up) ya-= speed;
-        if(_input.down) ya+=speed*1.34;
-        if(_input.left) xa-=speed;
-        if(_input.right) xa+=speed*1.34;
+        if(_input.up) ya -= speed;
+        if(_input.down) ya += speed;
+        if(_input.left) xa -= speed;
+        if(_input.right) xa += speed;
+
+
 
         if(xa != 0 || ya != 0)  {
-                move(xa * Sprite.PLAYERSPEED, ya * Sprite.PLAYERSPEED);
+            //System.out.println(ya);
+                move(xa , ya);
 
             _moving = true;
         } else {
@@ -122,18 +128,23 @@ public class Bomber extends Mob {
         if(ya > 0) _direction = 2;
         if(ya < 0) _direction = 0;
 
-        if(canMove(this.rectangle)) { //separate the moves for the player can slide when is colliding
-            if (canMove(new Rectangle(x, (int) (y + ya), (int) img.getWidth(), (int) img.getHeight())) ) {
+        if(canMove(this.rectangle)) {
+            if (canMove(new Rectangle(x, (int) (y + ya), 30, 32)) ) {
                 y += ya;
-                this.rectangle = new Rectangle(x, y , (int) img.getWidth(), (int) img.getHeight());
+                this.rectangle = new Rectangle(x, y , 30, 32);
+                //System.out.println(rectangle);
+            } else {
+                rounding2();
             }
 
         }
 
         if(canMove(this.rectangle)) {
-            if (canMove(new Rectangle((int) (x + xa), y, (int) img.getWidth(), (int) img.getHeight())) ) {
+            if (canMove(new Rectangle((int) (x + xa), y, 30, 32)) ) {
                 x += xa;
-                this.rectangle = new Rectangle(x, y , (int) img.getWidth(), (int) img.getHeight());
+                this.rectangle = new Rectangle(x, y , 30, 32);
+            } else {
+                rounding2();
             }
 
         }
@@ -156,10 +167,22 @@ public class Bomber extends Mob {
     @Override
     protected boolean canMove(Rectangle rec) {
         Entity a = game.getEntity(rec);
-        if (a != null && (a instanceof Wall || a instanceof Brick)) {
+        Entity t = BombermanGame.checkCollisionItem(rec);
+        if (a != null && (a instanceof Wall)) {
             return false;
         }
-        else return true;
+        if (t != null && (t instanceof Portal || t instanceof Brick)) {
+            if (t instanceof Portal) {
+                if (((Portal) t).getState() != 2) {
+                    return false;
+                } else {
+                    BombermanGame.nextLevel();
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
     }
 
     //thêm bom vào stillobjects
@@ -171,10 +194,12 @@ public class Bomber extends Mob {
                 if (listBom.size() == 0 ) {
                     listBom.add(bom);
                     BombermanGame.stillObjects.add(bom);
+                    //GameSound.getInstance().playAudio("BOMB");
                 } else {
                     if (checkListBom(bom) == false) {
                         listBom.add(bom);
                         BombermanGame.stillObjects.add(bom);
+                        //GameSound.getInstance().playAudio("BONG_BANG");
                     }
                 }
 
@@ -221,6 +246,7 @@ public class Bomber extends Mob {
                 listBomBang.get(i).deadLineBomBang();
             } else {
                 listBomBang.remove(i);
+                //GameSound.getInstance().playAudio("BONG_BANG");
                 BombermanGame.stillObjects.remove(t);
             }
         }
@@ -232,11 +258,13 @@ public class Bomber extends Mob {
         if (c instanceof BomBang) {
             //System.out.println("player die");
             kill();
+            BombermanGame.restartLevel();
         }
 
         if (BombermanGame.checkCollisionEnemy(rectangle)) {
             //System.out.println("player die");
             kill();
+            BombermanGame.restartLevel();
         }
     }
 
@@ -244,7 +272,7 @@ public class Bomber extends Mob {
     public void checkItem() {
         Entity t = BombermanGame.checkCollisionItem(this.rectangle);
         if (t instanceof SpeedItem) {
-            speed = 1.5;
+            speed = 3.0;
             ((SpeedItem) t).afterCollision();
         }
 
@@ -257,6 +285,10 @@ public class Bomber extends Mob {
             max_bomb = 2;
             ((BombItem) t).afterCollision();
         }
+
+        if (t instanceof Portal) {
+
+        }
     }
 
     //làm tròn số để đặt bom
@@ -268,5 +300,24 @@ public class Bomber extends Mob {
         }
     }
 
+    public void rounding2() {
+        if (x % 32 >= 25) {
+            x = ((x / 32) + 1) * 32;
+        }
+
+        if (y % 32 >= 25) {
+            y = ((y / 32) + 1) * 32;
+        }
+
+        if (x % 32 <= 7) {
+            x =  (x / 32) * 32;
+        }
+
+        if (y % 32 <= 7) {
+            y =  (y / 32) * 32;
+        }
+        this.rectangle = new Rectangle(x, y , 30, 32);
+        return;
+    }
 
 }

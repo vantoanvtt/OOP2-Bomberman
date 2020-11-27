@@ -42,5 +42,13 @@ public abstract class Entity {
         return this.rectangle;
     }
 
+    public int getXTile() {
+        return (int) this.x / Sprite.SCALED_SIZE;
+    }
+
+    public int getYTile() {
+        return (int) this.y / Sprite.SCALED_SIZE;
+    }
+
     public abstract void update();
 }

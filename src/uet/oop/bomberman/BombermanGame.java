@@ -10,32 +10,42 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
-import uet.oop.bomberman.entities.Item.BombItem;
-import uet.oop.bomberman.entities.Item.FlameItem;
-import uet.oop.bomberman.entities.Item.SpeedItem;
+import uet.oop.bomberman.entities.Item.Portal;
+import uet.oop.bomberman.entities.enemys.Balloom;
+import uet.oop.bomberman.entities.enemys.Oneal;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.input.Keyboard;
+import uet.oop.bomberman.map.Map;
+import uet.oop.bomberman.sound.GameSound;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.logging.Level;
 
 public class BombermanGame extends Application {
-    
-    public static final int WIDTH = 20;
-    public static final int HEIGHT = 15;
-    public static final int LEVEL = 1;
-    public static boolean sp = true;
+
+    public static int LEVEL = 1;
 
     
     private GraphicsContext gc;
     private Canvas canvas;
+
+
+    public static Entity player;
+
+    //lưu enemy
     public static List<Entity> entities = new ArrayList<>();
+    //lưu tường và cỏ
     public static List<Entity> stillObjects = new ArrayList<>();
+    //lưu brick portal, item
     public static List<Entity> changeObjects = new ArrayList<>();
-    private Keyboard input = new Keyboard();
+    //map
+    private static Map map;
+    public static Keyboard input = new Keyboard();
 
 
     public List<Entity> getStillObjects() {
@@ -48,8 +58,11 @@ public class BombermanGame extends Application {
 
     @Override
     public void start(Stage stage) {
+
+        // read map truoc de co width va height
+            map = new Map(LEVEL);
         // Tao Canvas
-        canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
+        canvas = new Canvas(Sprite.SCALED_SIZE * map.getWIDTH(), Sprite.SCALED_SIZE * map.getHEIGHT());
         gc = canvas.getGraphicsContext2D();
 
         // Tao root container
@@ -98,83 +111,15 @@ public class BombermanGame extends Application {
         };
         timer.start();
 
-        createMap();
-
-        Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage(), input);
-        Entity testBalloom = new Balloom(6,6,Sprite.balloom_right1.getFxImage());
-        entities.add(bomberman);
-        entities.add(testBalloom);
-    }
-
-    // tạo bản đồ
-
-    public void createMap() {
-
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                Entity object;
-                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-                    object = new Wall(i, j, Sprite.wall.getFxImage());
-                }
-                else {
-                    object = new Grass(i, j, Sprite.grass.getFxImage());
-                }
-                stillObjects.add(object);
-            }
-        }
-
-        
-
-
-        // them de test
-        changeObjects.add(new Brick(8,8,Sprite.brick.getFxImage()));
-        changeObjects.add(new Brick(4,8,Sprite.brick.getFxImage()));
-        changeObjects.add(new Brick(5,8,Sprite.brick.getFxImage()));
-        changeObjects.add(new Brick(6,8,Sprite.brick.getFxImage()));
-        changeObjects.add(new Brick(7,8,Sprite.brick.getFxImage()));
-        changeObjects.add(new Brick(8,8,Sprite.brick.getFxImage()));
-        changeObjects.add(new Brick(9,8,Sprite.brick.getFxImage()));
-        changeObjects.add(new Brick(10,8,Sprite.brick.getFxImage()));
-        changeObjects.add(new Brick(6,10,Sprite.brick.getFxImage()));
 
     }
 
-    public void addObject(char c, int x, int y) {
-        switch (c) {
-            case '#': changeObjects.add(new Wall(x,y,Sprite.brick.getFxImage()));
-            case '*': changeObjects.add(new Brick(x,y,Sprite.brick.getFxImage()));
-            case 'x': changeObjects.add(new Portal(x,y,Sprite.brick.getFxImage()));
-        }
+
+    public static void restartLevel() {
+        map = new Map(LEVEL);
     }
-
-    public static void ReadMapToFile(int l) {
-        String ip = "res\\levels\\Level" + LEVEL + ".txt";
-        Scanner sc = null;
-        try{
-            sc = new Scanner(Paths.get(ip));
-            int level = sc.nextInt();
-            int h = sc.nextInt();
-            int w = sc.nextInt();
-            sc.nextLine();
-
-            char[][] obj = new char[h][w]
-
-            for (int i = 0; i < h; i++) {
-                String s = scanner.nextLine();
-                for (int j = 0; j < w; w++) {
-                    if (s.length() > 0)
-                        obj[i][j] = s.charAt(w);
-                }
-            }
-
-            LEVEL = level;
-            HEIGHT = h;
-            WIDTH = w;
-        } catch (IOException e) {
-            System.out.println("lỗi đọc file map");
-            System.out.println(e.fillInStackTrace());
-        }
-        sc.close();
+    public static void nextLevel() {
+        map = new Map(++LEVEL);
     }
     public void update() {
         for (int i = 0; i < changeObjects.size(); i++) {
@@ -183,6 +128,7 @@ public class BombermanGame extends Application {
         for (int i = 0; i < entities.size(); i++) {
             entities.get(i).update();
         }
+        player.update();
     }
 
     public void render() {
@@ -192,10 +138,11 @@ public class BombermanGame extends Application {
         changeObjects.forEach(g -> g.render(gc));
         //Bomber.listBom.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
-
+        player.render(gc);
+       // GameSound.getInstance().getAudio(GameSound.PLAY_GAME).play();
     }
 
-    //kiểm tra chạm wall va brick
+    //kiểm tra chạm wall va bom
     public static Entity getEntity(Rectangle rec) {
         //System.out.println(stillObjects.size());
         for (int i = 0; i < stillObjects.size(); i++) {
@@ -206,7 +153,9 @@ public class BombermanGame extends Application {
                 }
             }
             if (t instanceof Bomb) {
-
+                if (t.getRectangle().getBounds().intersects(rec.getBounds())) {
+                    return t;
+                }
             } else {
                 if (t.getRectangle().getBounds().intersects(rec.getBounds())) {
                     if (t instanceof Wall ) {
@@ -217,18 +166,6 @@ public class BombermanGame extends Application {
                 }
             }
 
-        }
-
-        for (int i = 0; i < changeObjects.size(); i++) {
-            Entity t = changeObjects.get(i);
-            if (t != null ) {
-                if (t.getRectangle().getBounds().intersects(rec.getBounds())) {
-                    if (t instanceof Brick) {
-                        return t;
-                    }
-                }
-
-            }
         }
 
         return null;
@@ -248,15 +185,12 @@ public class BombermanGame extends Application {
         return false;
     }
 
-    //kiểm tra chạm item
+    //kiểm tra chạm item, brick, portal
     public static Entity checkCollisionItem(Rectangle rec) {
         for (int i = 0; i < changeObjects.size(); i++) {
             Entity t = changeObjects.get(i);
-            if (! (t instanceof Brick)) {
-                if (t.getRectangle().intersects(rec)) {
-                    return t;
-                }
-            }
+            if (t.getRectangle().intersects(rec)) return t;
+
         }
         return null;
     }
