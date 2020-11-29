@@ -10,30 +10,24 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
-import uet.oop.bomberman.entities.Item.Portal;
-import uet.oop.bomberman.entities.enemys.Balloom;
-import uet.oop.bomberman.entities.enemys.Oneal;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.input.Keyboard;
 import uet.oop.bomberman.map.Map;
-import uet.oop.bomberman.sound.GameSound;
+import uet.oop.bomberman.sound.Sound;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Level;
 
 public class BombermanGame extends Application {
 
-    public static int LEVEL = 1;
+    public static int LEVEL = 5;
 
     
     private GraphicsContext gc;
     private Canvas canvas;
 
+    public static Sound sound = new Sound();
 
     public static Entity player;
 

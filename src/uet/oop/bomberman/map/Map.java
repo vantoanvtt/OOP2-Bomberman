@@ -6,8 +6,7 @@ import uet.oop.bomberman.entities.Brick;
 import uet.oop.bomberman.entities.Grass;
 import uet.oop.bomberman.entities.Item.Portal;
 import uet.oop.bomberman.entities.Wall;
-import uet.oop.bomberman.entities.enemys.Balloom;
-import uet.oop.bomberman.entities.enemys.Oneal;
+import uet.oop.bomberman.entities.enemys.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.io.File;
@@ -64,6 +63,23 @@ public class Map {
                 BombermanGame.entities.add(new Oneal(x, y, Sprite.oneal_right1.getFxImage()));
                 break;
             }
+            case '3': {
+                BombermanGame.stillObjects.add(new Grass(x,y,Sprite.grass.getFxImage()));
+                BombermanGame.entities.add(new Condoria(x, y, Sprite.kondoria_right1.getFxImage()));
+                break;
+            }
+
+            case '4': {
+                BombermanGame.stillObjects.add(new Grass(x,y,Sprite.grass.getFxImage()));
+                BombermanGame.entities.add(new Doll(x, y, Sprite.doll_right1.getFxImage()));
+                break;
+            }
+
+            case '5': {
+                BombermanGame.stillObjects.add(new Grass(x,y,Sprite.grass.getFxImage()));
+                BombermanGame.entities.add(new Minvo(x, y, Sprite.minvo_right1.getFxImage()));
+                break;
+            }
             case 'p': {
                 BombermanGame.stillObjects.add(new Grass(x,y,Sprite.grass.getFxImage()));
                 BombermanGame.player = new Bomber(x, y, Sprite.player_right.getFxImage(), BombermanGame.input);
@@ -99,7 +115,6 @@ public class Map {
             int h = sc.nextInt();
             int w = sc.nextInt();
 
-            System.out.println(level + " " + h + " " + w);
             sc.nextLine();
 
             char[][] obj = new char[h][w];
@@ -107,10 +122,10 @@ public class Map {
             for (int i = 0; i < h; i++) {
                 String s = sc.nextLine();
                 for (int j = 0; j < w; j++) {
-                    System.out.print(s.charAt(j));
+                    //System.out.print(s.charAt(j));
                     addObject(s.charAt(j), j, i);
                 }
-                System.out.println();
+               // System.out.println();
             }
 
             LEVEL = level;

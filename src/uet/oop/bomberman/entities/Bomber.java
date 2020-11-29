@@ -12,7 +12,6 @@ import uet.oop.bomberman.entities.Item.Portal;
 import uet.oop.bomberman.entities.Item.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.input.Keyboard;
-import uet.oop.bomberman.sound.GameSound;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -190,16 +189,18 @@ public class Bomber extends Mob {
         if (_input.space) {
             if (listBom.size() < max_bomb) {
                 Bomb bom = new Bomb(rounding(x*1.0 / Sprite.SCALED_SIZE), rounding(y*1.0 / Sprite.SCALED_SIZE)
-                        , Sprite.bomb.getFxImage(), 200);
+                        , Sprite.bomb.getFxImage(), 150);
                 if (listBom.size() == 0 ) {
                     listBom.add(bom);
                     BombermanGame.stillObjects.add(bom);
+                    BombermanGame.sound.playSound("Make_Bomb.mp3");
                     //GameSound.getInstance().playAudio("BOMB");
                 } else {
                     if (checkListBom(bom) == false) {
                         listBom.add(bom);
                         BombermanGame.stillObjects.add(bom);
                         //GameSound.getInstance().playAudio("BONG_BANG");
+
                     }
                 }
 

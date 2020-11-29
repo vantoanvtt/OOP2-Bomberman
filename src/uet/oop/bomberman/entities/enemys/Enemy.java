@@ -48,14 +48,18 @@ public abstract class Enemy extends Mob {
         checkDead();
         if(_alive == false) {
             kill();
-            if (timedead < 1) {
+            if (timedead < 0) {
                 afterKill();
             }
         }
 
 
-        if(_alive)
+        if(_alive) {
+            chooseSprite();
             calculateMove();
+        }
+
+
     }
 
     public void animate() {
