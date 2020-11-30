@@ -193,7 +193,8 @@ public class Bomber extends Mob {
                 if (listBom.size() == 0 ) {
                     listBom.add(bom);
                     BombermanGame.stillObjects.add(bom);
-                    BombermanGame.sound.playSound("Make_Bomb.mp3");
+                    //BombermanGame.sound.playSound("Make_Bomb.mp3");
+                    BombermanGame.sound.makeBomb.play();
                     //GameSound.getInstance().playAudio("BOMB");
                 } else {
                     if (checkListBom(bom) == false) {

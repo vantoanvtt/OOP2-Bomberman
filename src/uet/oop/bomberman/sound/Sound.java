@@ -6,6 +6,7 @@ import javafx.scene.media.MediaPlayer;
 import java.net.URL;
 
 public class Sound {
+
     // Sound effect
     public MediaPlayer startSound = SoundController.makeSound("Level_Start.mp3");
     public MediaPlayer walking = SoundController.makeSound("Walk_cut1.mp3", 0.1);
@@ -29,6 +30,7 @@ public class Sound {
     }
 
     public void playSound(String mp3File) {
+
         makeSound(mp3File).play();
 //        SoundController soundController = new SoundController();
 //        soundController.makeSound(mp3File).play();
