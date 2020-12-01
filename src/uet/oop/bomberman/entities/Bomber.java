@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.SoundEffect;
 import uet.oop.bomberman.entities.Item.BombItem;
 import uet.oop.bomberman.entities.Item.FlameItem;
 import uet.oop.bomberman.entities.Item.Portal;
@@ -37,6 +38,9 @@ public class Bomber extends Mob {
         this.rectangle = new Rectangle(this.x, this.y , 30, 32);
     }
 
+    public static List<Bomb> getListBom() {
+        return listBom;
+    }
 
     @Override
     public void update() {
@@ -193,14 +197,13 @@ public class Bomber extends Mob {
                 if (listBom.size() == 0 ) {
                     listBom.add(bom);
                     BombermanGame.stillObjects.add(bom);
-                    //BombermanGame.sound.playSound("Make_Bomb.mp3");
-                    BombermanGame.sound.makeBomb.play();
-                    //GameSound.getInstance().playAudio("BOMB");
+                    SoundEffect.sound(SoundEffect.mediaPlayerPlaceBomb);
                 } else {
                     if (checkListBom(bom) == false) {
                         listBom.add(bom);
                         BombermanGame.stillObjects.add(bom);
                         //GameSound.getInstance().playAudio("BONG_BANG");
+                        SoundEffect.sound(SoundEffect.mediaPlayerPlaceBomb);
 
                     }
                 }
@@ -237,6 +240,7 @@ public class Bomber extends Mob {
                 }
 
                 BombermanGame.stillObjects.addAll(listBomBang);
+                SoundEffect.sound(SoundEffect.mediaPlayerBombExploded);
             }
 
         }
@@ -276,16 +280,19 @@ public class Bomber extends Mob {
         if (t instanceof SpeedItem) {
             speed = 3.0;
             ((SpeedItem) t).afterCollision();
+            SoundEffect.sound(SoundEffect.mediaPlayerEatItem);
         }
 
         if (t instanceof FlameItem) {
             flame = true;
             ((FlameItem) t).afterCollision();
+            SoundEffect.sound(SoundEffect.mediaPlayerEatItem);
         }
 
         if (t instanceof BombItem) {
             max_bomb = 2;
             ((BombItem) t).afterCollision();
+            SoundEffect.sound(SoundEffect.mediaPlayerEatItem);
         }
 
         if (t instanceof Portal) {

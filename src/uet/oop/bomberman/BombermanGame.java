@@ -3,11 +3,13 @@ package uet.oop.bomberman;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
@@ -16,20 +18,23 @@ import uet.oop.bomberman.map.Map;
 import uet.oop.bomberman.sound.Sound;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BombermanGame extends Application {
 
-    public static int LEVEL = 5;
+    public static int LEVEL = 2;
 
+    protected AnchorPane scoreBoard = new AnchorPane();
     
     private GraphicsContext gc;
     private Canvas canvas;
 
     public static Sound sound = new Sound();
 
-    public static Entity player;
+    public static Bomber player;
+
 
     //lưu enemy
     public static List<Entity> entities = new ArrayList<>();
@@ -59,10 +64,23 @@ public class BombermanGame extends Application {
         canvas = new Canvas(Sprite.SCALED_SIZE * map.getWIDTH(), Sprite.SCALED_SIZE * map.getHEIGHT());
         gc = canvas.getGraphicsContext2D();
 
+
+        /*try {
+            FXMLLoader fxml = new FXMLLoader();
+            fxml.setLocation(getClass().getResource("../../../pane/score.fxml"));
+            scoreBoard = fxml.load();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        scoreBoard.relocate(Sprite.SCALED_SIZE * map.getWIDTH(), 0);
+        scoreBoard.setPrefHeight(Sprite.SCALED_SIZE * map.getHEIGHT());*/
         // Tao root container
         Group root = new Group();
         root.getChildren().add(canvas);
-
+        //root.getChildren().add();
         // Tao scene
         Scene scene = new Scene(root);
 
@@ -96,6 +114,7 @@ public class BombermanGame extends Application {
         stage.setScene(scene);
         stage.show();
 
+        SoundEffect.sound(SoundEffect.mediaPlayerbacksound);
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {

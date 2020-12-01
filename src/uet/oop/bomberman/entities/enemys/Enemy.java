@@ -1,6 +1,7 @@
 package uet.oop.bomberman.entities.enemys;
 
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.SoundEffect;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.Item.Portal;
 import uet.oop.bomberman.entities.enemys.ai.AI;
@@ -48,6 +49,7 @@ public abstract class Enemy extends Mob {
         checkDead();
         if(_alive == false) {
             kill();
+            SoundEffect.sound(SoundEffect.mediaPlayerCollisionEnemy);
             if (timedead < 0) {
                 afterKill();
             }

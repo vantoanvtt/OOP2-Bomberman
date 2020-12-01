@@ -43,6 +43,7 @@ public class Map {
     }
 
     public Map(int level) {
+        Bomber.listBom.clear();
         BombermanGame.stillObjects.clear();
         BombermanGame.changeObjects.clear();
         BombermanGame.entities.clear();
