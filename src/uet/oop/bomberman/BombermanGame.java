@@ -8,8 +8,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
@@ -24,10 +26,12 @@ import java.util.List;
 
 public class BombermanGame extends Application {
 
-    public static int LEVEL = 2;
+    public static int LEVEL = 1;
 
-    protected AnchorPane scoreBoard = new AnchorPane();
-    
+    protected AnchorPane scoreBoard = null;
+    protected VBox v = new VBox();
+    protected Label l = new Label("level");
+
     private GraphicsContext gc;
     private Canvas canvas;
 
@@ -68,19 +72,19 @@ public class BombermanGame extends Application {
         /*try {
             FXMLLoader fxml = new FXMLLoader();
             fxml.setLocation(getClass().getResource("../../../pane/score.fxml"));
-            scoreBoard = fxml.load();
-
+            scoreBoard = (AnchorPane) FXMLLoader.load(getClass().getResource("../../../pane/score.fxml"));;
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
-        scoreBoard.relocate(Sprite.SCALED_SIZE * map.getWIDTH(), 0);
-        scoreBoard.setPrefHeight(Sprite.SCALED_SIZE * map.getHEIGHT());*/
+        //scoreBoard.relocate(Sprite.SCALED_SIZE * map.getWIDTH(), 0);
+        //scoreBoard.setPrefHeight(Sprite.SCALED_SIZE * map.getHEIGHT());
+        
         // Tao root container
         Group root = new Group();
         root.getChildren().add(canvas);
-        //root.getChildren().add();
+        root.getChildren().add(v);
         // Tao scene
         Scene scene = new Scene(root);
 
@@ -152,7 +156,6 @@ public class BombermanGame extends Application {
         //Bomber.listBom.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
         player.render(gc);
-       // GameSound.getInstance().getAudio(GameSound.PLAY_GAME).play();
     }
 
     //kiểm tra chạm wall va bom

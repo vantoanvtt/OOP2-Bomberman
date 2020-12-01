@@ -15,12 +15,12 @@ public class SoundEffect extends Application{
     public static MediaPlayer mediaPlayerbacksound = new MediaPlayer(mediaBackSound);
 
     //EatItem
-    public static Media mediaEatItem = new Media(new File("src\\Sound\\19.wav")
+    public static Media mediaEatItem = new Media(new File("src\\Sound\\item.wav")
             .toURI().toString());
     public static MediaPlayer mediaPlayerEatItem = new MediaPlayer(mediaEatItem);
 
     //Die
-    public static Media mediaCollisionEnemy = new Media(new File("src\\Sound\\collision.wav")
+    public static Media mediaCollisionEnemy = new Media(new File("src\\Sound\\monster_die.wav")
             .toURI().toString());
     public static MediaPlayer mediaPlayerCollisionEnemy = new MediaPlayer(mediaCollisionEnemy);
 
@@ -29,14 +29,21 @@ public class SoundEffect extends Application{
             .toURI().toString());
     public static MediaPlayer mediaPlayerBombExploded = new MediaPlayer(mediaBombExploded);
 
-    public static Media mediaPlaceBomb = new Media(new File("src\\Sound\\placeBomb.mp3")
+    public static Media mediaPlaceBomb = new Media(new File("src\\Sound\\newbomb.wav")
             .toURI().toString());
     public static MediaPlayer mediaPlayerPlaceBomb = new MediaPlayer(mediaPlaceBomb);
+
+    public static Media mediaBomberDie = new Media(new File("src\\Sound\\bomber_die.wav")
+            .toURI().toString());
+    public static MediaPlayer mediaPlayerDie = new MediaPlayer(mediaBomberDie);
+
 
 
     public static void sound(MediaPlayer mp) {
         mp.play();
-        System.out.println("play");
+        mp.seek(mp.getStartTime());
+
+        //mp.stop();
     }
 
     @Override

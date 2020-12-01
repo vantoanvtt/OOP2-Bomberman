@@ -164,7 +164,7 @@ public class Bomber extends Mob {
 
     @Override
     protected void afterKill() {
-
+        BombermanGame.restartLevel();
     }
 
     @Override
@@ -198,6 +198,7 @@ public class Bomber extends Mob {
                     listBom.add(bom);
                     BombermanGame.stillObjects.add(bom);
                     SoundEffect.sound(SoundEffect.mediaPlayerPlaceBomb);
+                    //SoundEffect.mediaPlayerPlaceBomb.stop();
                 } else {
                     if (checkListBom(bom) == false) {
                         listBom.add(bom);
@@ -262,15 +263,15 @@ public class Bomber extends Mob {
     public void checkDead() {
         Entity c = BombermanGame.getEntity(rectangle);
         if (c instanceof BomBang) {
-            //System.out.println("player die");
             kill();
-            BombermanGame.restartLevel();
+            SoundEffect.sound(SoundEffect.mediaPlayerDie);
+
         }
 
         if (BombermanGame.checkCollisionEnemy(rectangle)) {
             //System.out.println("player die");
             kill();
-            BombermanGame.restartLevel();
+            SoundEffect.sound(SoundEffect.mediaPlayerDie);
         }
     }
 
@@ -296,7 +297,7 @@ public class Bomber extends Mob {
         }
 
         if (t instanceof Portal) {
-
+            SoundEffect.sound(SoundEffect.mediaPlayerEatItem);
         }
     }
 

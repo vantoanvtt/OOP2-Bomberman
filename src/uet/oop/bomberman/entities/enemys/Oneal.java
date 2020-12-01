@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class Oneal extends Enemy {
     protected Random random = new Random();
-    protected int speedTime = 100;
+    protected int speedTime = 30;
     public Oneal(int x, int y, Image img) {
         super(x, y, img, 2.0,150);
         this._ai = new AIMedium((Bomber) BombermanGame.player, this);
@@ -42,14 +42,9 @@ public class Oneal extends Enemy {
     public void speedTimed() {
         speedTime--;
         if (speedTime < 0) {
-            speedTime = 100;
-            int r = random.nextInt(2);
-            if (r != 0) {
-                this._speed = r;
-            } else {
-                this._speed = 2.0;
-            }
-
+            speedTime = 30;
+            int r = random.nextInt(1);
+            this._speed = 2 + r;
         }
     }
     @Override
